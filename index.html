@@ -39,7 +39,20 @@
   #hint:empty{visibility:hidden}
   @media(max-width:600px){body{padding:12px 12px 78px}.player{padding:26px 20px 32px;border-radius:20px}.readout{margin:26px 0 20px;gap:8px}#number{width:75%}.ends{margin-bottom:22px}}
   @media(max-height:570px){body{padding-top:7px;padding-bottom:60px}.player{padding-top:14px;padding-bottom:18px}.readout{margin:11px 0}#number{font-size:clamp(48px,8vw,69px)}.ends{margin-bottom:12px}#play{min-height:47px}#hint{margin-top:8px}}
-  @media(prefers-reduced-motion:reduce){#play{transition:none}}
+  /* 15 個音階快捷鍵：不改變原本播放器的控制方式 */
+  .note-section{margin-top:30px;padding-top:24px;border-top:1px solid #e8eff5}
+  .note-keys{--cols:8;--note-gap:8px;display:flex;flex-wrap:wrap;justify-content:center;gap:var(--note-gap)}
+  .note-key{flex:0 0 calc((100% - (var(--cols) - 1)*var(--note-gap))/var(--cols));min-width:0;min-height:65px;padding:9px 3px;border:1px solid #dce8f3;border-radius:13px;background:#f5f9fd;color:#37688d;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;font-family:inherit;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;transition:background-color .14s ease,border-color .14s ease,transform .12s ease;touch-action:manipulation}
+  .note-key:hover{border-color:#94bfe0;background:#eaf3fc}
+  .note-key:active{transform:translateY(1px)}
+  .note-key:focus-visible{outline:3px solid #94c5e9;outline-offset:2px}
+  .note-key[aria-pressed="true"]{background:#dcefff;border-color:#4c94cd;box-shadow:inset 0 0 0 1px #7eb4dc;color:#174d79}
+  .syllable{font-size:17px;font-weight:750;line-height:1.16;letter-spacing:-.015em}
+  .note-code{font-size:12px;font-weight:600;line-height:1.15;opacity:.78;font-variant-numeric:tabular-nums}
+  @media(max-width:720px){.note-keys{--cols:5;--note-gap:8px}.note-section{margin-top:24px;padding-top:20px}}
+  @media(max-width:420px){.note-keys{--cols:5;--note-gap:6px}.note-key{min-height:58px;border-radius:11px;padding:7px 2px}.syllable{font-size:15px}.note-code{font-size:11px}}
+  @media(max-height:580px) and (min-width:721px){.note-section{margin-top:15px;padding-top:14px}.note-key{min-height:51px;padding:6px 3px}.syllable{font-size:15px}}
+  @media(prefers-reduced-motion:reduce){#play,.note-key{transition:none}}
 </style>
 </head>
 <body>
@@ -59,6 +72,25 @@
       <span id="playText">播放</span>
     </button>
   </div>
+  <div class="note-section" aria-label="中央 Do 到高高音 Do 的十五個音階快捷鍵">
+    <div class="note-keys">
+    <button class="note-key" type="button" data-hz="262" aria-pressed="false" aria-label="Do，C4，262 赫茲" title="C4 · 262 Hz"><span class="syllable">Do</span><span class="note-code">C4</span></button>
+    <button class="note-key" type="button" data-hz="294" aria-pressed="false" aria-label="Re，D4，294 赫茲" title="D4 · 294 Hz"><span class="syllable">Re</span><span class="note-code">D4</span></button>
+    <button class="note-key" type="button" data-hz="330" aria-pressed="false" aria-label="Mi，E4，330 赫茲" title="E4 · 330 Hz"><span class="syllable">Mi</span><span class="note-code">E4</span></button>
+    <button class="note-key" type="button" data-hz="349" aria-pressed="false" aria-label="Fa，F4，349 赫茲" title="F4 · 349 Hz"><span class="syllable">Fa</span><span class="note-code">F4</span></button>
+    <button class="note-key" type="button" data-hz="392" aria-pressed="false" aria-label="Sol，G4，392 赫茲" title="G4 · 392 Hz"><span class="syllable">Sol</span><span class="note-code">G4</span></button>
+    <button class="note-key" type="button" data-hz="440" aria-pressed="false" aria-label="La，A4，440 赫茲" title="A4 · 440 Hz"><span class="syllable">La</span><span class="note-code">A4</span></button>
+    <button class="note-key" type="button" data-hz="494" aria-pressed="false" aria-label="Si，B4，494 赫茲" title="B4 · 494 Hz"><span class="syllable">Si</span><span class="note-code">B4</span></button>
+    <button class="note-key" type="button" data-hz="523" aria-pressed="false" aria-label="Do，C5，523 赫茲" title="C5 · 523 Hz"><span class="syllable">Do</span><span class="note-code">C5</span></button>
+    <button class="note-key" type="button" data-hz="587" aria-pressed="false" aria-label="Re，D5，587 赫茲" title="D5 · 587 Hz"><span class="syllable">Re</span><span class="note-code">D5</span></button>
+    <button class="note-key" type="button" data-hz="659" aria-pressed="false" aria-label="Mi，E5，659 赫茲" title="E5 · 659 Hz"><span class="syllable">Mi</span><span class="note-code">E5</span></button>
+    <button class="note-key" type="button" data-hz="698" aria-pressed="false" aria-label="Fa，F5，698 赫茲" title="F5 · 698 Hz"><span class="syllable">Fa</span><span class="note-code">F5</span></button>
+    <button class="note-key" type="button" data-hz="784" aria-pressed="false" aria-label="Sol，G5，784 赫茲" title="G5 · 784 Hz"><span class="syllable">Sol</span><span class="note-code">G5</span></button>
+    <button class="note-key" type="button" data-hz="880" aria-pressed="false" aria-label="La，A5，880 赫茲" title="A5 · 880 Hz"><span class="syllable">La</span><span class="note-code">A5</span></button>
+    <button class="note-key" type="button" data-hz="988" aria-pressed="false" aria-label="Si，B5，988 赫茲" title="B5 · 988 Hz"><span class="syllable">Si</span><span class="note-code">B5</span></button>
+    <button class="note-key" type="button" data-hz="1047" aria-pressed="false" aria-label="Do，C6，1047 赫茲" title="C6 · 1047 Hz"><span class="syllable">Do</span><span class="note-code">C6</span></button>
+    </div>
+  </div>
   <p id="hint" role="status" aria-live="polite"></p>
 </main>
 <script>
@@ -71,6 +103,7 @@
   const positionAt=hz=>SLIDER_STEPS*Math.log1p(hz/OFFSET_HZ)/CURVE;
   const $=id=>document.getElementById(id);
   const number=$('number'),slider=$('frequency'),play=$('play'),playText=$('playText'),playIcon=$('playIcon'),hint=$('hint');
+  const noteButtons=[...document.querySelectorAll('.note-key')];
   let freq=1000,playing=false,context=null,osc=null,volume=null;
   const parseHz=n=>Math.max(0,Math.min(MAX_HZ,Math.round(Number.isFinite(n)?n:0)));
   const VOLUME=0.15; // v1.2：將 v1.1 的輸出振幅增加一倍；避免過度放大及數位削波。
@@ -87,6 +120,7 @@
     playText.textContent=playing?'停止':'播放';
     play.setAttribute('aria-label',playing?'停止純音':'播放純音');
     playIcon.innerHTML=playing?ICON_STOP:ICON_PLAY;
+    for(const btn of noteButtons)btn.setAttribute('aria-pressed',String(Number(btn.dataset.hz)===freq));
     if(playing && context && freq>0 && !supported())hint.textContent='目前頻率超過裝置可輸出的範圍';
     else hint.textContent='';
   }
@@ -130,6 +164,13 @@
   number.addEventListener('input',()=>{if(number.value!=='')setHz(Number(number.value));});
   number.addEventListener('change',()=>{setHz(Number(number.value));number.value=String(freq);});
   number.addEventListener('blur',()=>number.value=String(freq));
+  for(const btn of noteButtons){
+    btn.addEventListener('click',()=>{
+      // 選擇音階時，同步更新可輸入的數字、原本的滑桿及播放中的音高。
+      if(document.activeElement===number)number.blur();
+      setHz(Number(btn.dataset.hz));
+    });
+  }
   play.addEventListener('click',()=>playing?stop():start());
   window.addEventListener('pagehide',stop);
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)stop();});

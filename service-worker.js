@@ -1,4 +1,4 @@
-const CACHE='hearing-player-v1.2.0';
+const CACHE='hearing-player-v1.3.0';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./home-button.js','./icon-32.png','./icon-80.png','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('hearing-player-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
