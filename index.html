@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8fafc">
+<meta name="description" content="單一非線性拉桿，0 至 21,000 Hz 的純音播放器。">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-80.png" type="image/png">
+<title>聲音頻率｜Hearing Player</title>
+<style>
+  :root {font-family:system-ui,-apple-system,"Noto Sans TC","Microsoft JhengHei",sans-serif;color:#25384b;background:#f8fafc;font-synthesis:none}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100dvh;display:grid;place-items:center;padding:20px 22px 76px}
+  .player{width:min(100%,870px);padding:clamp(24px,5.2vw,58px) clamp(22px,6.5vw,72px);background:#fff;border:1px solid #e6edf4;border-radius:24px;box-shadow:0 16px 50px rgba(40,65,87,.055)}
+  h1{font-size:clamp(18px,2.4vw,22px);font-weight:700;margin:0;text-align:center;letter-spacing:.04em;color:#567083}
+  .readout{display:flex;align-items:baseline;justify-content:center;gap:12px;margin:clamp(20px,4.2vh,34px) 0 27px}
+  #number{width:min(72%,450px);min-width:3ch;margin:0;padding:0 0 3px;background:none;color:#1c5485;border:0;border-bottom:2px solid transparent;border-radius:0;font-family:inherit;font-weight:760;font-size:clamp(52px,9vw,93px);letter-spacing:-.045em;font-variant-numeric:tabular-nums;line-height:1.12;text-align:right;appearance:textfield;-moz-appearance:textfield;outline:none}
+  #number:focus-visible{border-bottom-color:#7aa6cb}
+  #number::-webkit-outer-spin-button,#number::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .hz{font-size:clamp(25px,4.1vw,39px);color:#8ba0b0;font-weight:600}
+  .slide-area{padding-top:12px}
+  #frequency{--pct:0%;appearance:none;-webkit-appearance:none;display:block;width:100%;height:35px;margin:0;background:transparent;cursor:pointer;touch-action:pan-y;outline:none}
+  #frequency::-webkit-slider-runnable-track{height:9px;border:0;border-radius:100px;background:linear-gradient(to right,#4c90c7 var(--pct),#e5edf4 var(--pct))}
+  #frequency::-moz-range-track{height:9px;border:0;border-radius:100px;background:linear-gradient(to right,#4c90c7 var(--pct),#e5edf4 var(--pct))}
+  #frequency::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:27px;height:27px;margin-top:-9px;border-radius:50%;border:5px solid white;background:#3d86be;box-shadow:0 2px 11px rgba(18,71,111,.23),0 0 0 1px #c7d7e5}
+  #frequency::-moz-range-thumb{width:18px;height:18px;border-radius:50%;border:5px solid white;background:#3d86be;box-shadow:0 2px 11px rgba(18,71,111,.23),0 0 0 1px #c7d7e5}
+  #frequency:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 5px #c7e1f5}
+  #frequency:focus-visible::-moz-range-thumb{box-shadow:0 0 0 5px #c7e1f5}
+  .ends{display:flex;justify-content:space-between;margin:6px 0 32px;color:#889cac;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+  .controls{display:flex;justify-content:center}
+  #play{border:0;min-width:172px;min-height:54px;border-radius:15px;background:#337db5;color:#fff;font-family:inherit;font-size:17px;font-weight:750;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:12px;transition:background-color .16s ease}
+  #play:hover{background:#256da5}
+  #play:focus-visible{outline:3px solid #97c9ef;outline-offset:4px}
+  #play[data-playing="true"]{background:#e6eff6;color:#285f89}
+  #play[data-playing="true"]:hover{background:#dbeaf4}
+  #play svg{width:18px;height:18px;fill:currentColor}
+  #hint{font-size:13px;min-height:20px;margin:15px 0 -12px;color:#6b8193;text-align:center}
+  #hint:empty{visibility:hidden}
+  @media(max-width:600px){body{padding:12px 12px 78px}.player{padding:26px 20px 32px;border-radius:20px}.readout{margin:26px 0 20px;gap:8px}#number{width:75%}.ends{margin-bottom:22px}}
+  @media(max-height:570px){body{padding-top:7px;padding-bottom:60px}.player{padding-top:14px;padding-bottom:18px}.readout{margin:11px 0}#number{font-size:clamp(48px,8vw,69px)}.ends{margin-bottom:12px}#play{min-height:47px}#hint{margin-top:8px}}
+  @media(prefers-reduced-motion:reduce){#play{transition:none}}
+</style>
+</head>
+<body>
+<main class="player" aria-label="聲音頻率播放器">
+  <h1>聲音頻率</h1>
+  <div class="readout">
+    <input id="number" type="number" min="0" max="21000" step="1" inputmode="numeric" value="1000" aria-label="輸入頻率，單位赫茲" title="可直接輸入 0 至 21,000 Hz">
+    <span class="hz">Hz</span>
+  </div>
+  <div class="slide-area">
+    <input id="frequency" type="range" min="0" max="10000" step="1" value="5030" aria-label="頻率拉桿，非線性刻度，左側變化較慢，右側變化較快" aria-valuetext="1000 赫茲">
+    <div class="ends"><span>0 Hz</span><span>21,000 Hz</span></div>
+  </div>
+  <div class="controls">
+    <button id="play" type="button" data-playing="false" aria-label="播放純音">
+      <svg id="playIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.8v14.4a1 1 0 0 0 1.54.84l11-7.2a1 1 0 0 0 0-1.68l-11-7.2A1 1 0 0 0 7 4.8Z"/></svg>
+      <span id="playText">播放</span>
+    </button>
+  </div>
+  <p id="hint" role="status" aria-live="polite"></p>
+</main>
+<script>
+(()=>{
+  'use strict';
+  const MAX_HZ=21000,SLIDER_STEPS=10000,OFFSET_HZ=50;
+  const CURVE=Math.log1p(MAX_HZ/OFFSET_HZ);
+  // 映射：滑桿前半較細、後半較快；頻率 0–21,000 Hz 全範圍。
+  const hzAt=position=>Math.max(0,Math.min(MAX_HZ,Math.round(OFFSET_HZ*Math.expm1(CURVE*position/SLIDER_STEPS))));
+  const positionAt=hz=>SLIDER_STEPS*Math.log1p(hz/OFFSET_HZ)/CURVE;
+  const $=id=>document.getElementById(id);
+  const number=$('number'),slider=$('frequency'),play=$('play'),playText=$('playText'),playIcon=$('playIcon'),hint=$('hint');
+  let freq=1000,playing=false,context=null,osc=null,volume=null;
+  const parseHz=n=>Math.max(0,Math.min(MAX_HZ,Math.round(Number.isFinite(n)?n:0)));
+  const VOLUME=0.15; // v1.2：將 v1.1 的輸出振幅增加一倍；避免過度放大及數位削波。
+  const ICON_PLAY='<path d="M7 4.8v14.4a1 1 0 0 0 1.54.84l11-7.2a1 1 0 0 0 0-1.68l-11-7.2A1 1 0 0 0 7 4.8Z"/>';
+  const ICON_STOP='<rect x="5.5" y="5.5" width="13" height="13" rx="2"/>';
+  function supported(){return context && freq>0 && freq<=MAX_HZ && freq<context.sampleRate/2-100;}
+  function paint(){
+    if(document.activeElement!==number)number.value=String(freq);
+    const pos=positionAt(freq);
+    slider.value=String(pos);
+    slider.style.setProperty('--pct',(100*pos/SLIDER_STEPS).toFixed(3)+'%');
+    slider.setAttribute('aria-valuetext',freq.toLocaleString('zh-TW')+' 赫茲');
+    play.dataset.playing=String(playing);
+    playText.textContent=playing?'停止':'播放';
+    play.setAttribute('aria-label',playing?'停止純音':'播放純音');
+    playIcon.innerHTML=playing?ICON_STOP:ICON_PLAY;
+    if(playing && context && freq>0 && !supported())hint.textContent='目前頻率超過裝置可輸出的範圍';
+    else hint.textContent='';
+  }
+  function tone(){
+    if(!context||!osc||!volume)return;
+    const now=context.currentTime;
+    // 柔和音量漸入／漸出，避免播放或變更頻率時產生突兀雜音。
+    volume.gain.cancelScheduledValues(now);
+    volume.gain.setTargetAtTime(playing&&supported()?VOLUME:0,now,0.065);
+    osc.frequency.cancelScheduledValues(now);
+    osc.frequency.setTargetAtTime(Math.max(1,freq),now,0.018);
+  }
+  function setHz(n){
+    freq=parseHz(n);
+    tone();paint();
+  }
+  async function start(){
+    if(playing)return;
+    try{
+      const Audio=window.AudioContext||window.webkitAudioContext;
+      if(!Audio){hint.textContent='此瀏覽器不支援音訊播放';return;}
+      if(!context||context.state==='closed')context=new Audio();
+      await context.resume();
+      if(!osc){
+        volume=context.createGain();volume.gain.value=0;
+        osc=context.createOscillator();osc.type='sine';osc.frequency.value=Math.max(1,freq);
+        osc.connect(volume);volume.connect(context.destination);osc.start();
+      }
+      playing=true;tone();paint();
+    }catch(err){playing=false;paint();hint.textContent='無法播放，請確認瀏覽器音訊權限';}
+  }
+  function stop(){playing=false;tone();paint();}
+  slider.addEventListener('input',()=>setHz(hzAt(Number(slider.value))));
+  slider.addEventListener('keydown',e=>{
+    if(!['ArrowLeft','ArrowRight','ArrowDown','ArrowUp'].includes(e.key))return;
+    e.preventDefault();
+    const step=e.shiftKey?10:1;
+    const dir=(e.key==='ArrowRight'||e.key==='ArrowUp')?1:-1;
+    setHz(freq+step*dir);
+  });
+  number.addEventListener('input',()=>{if(number.value!=='')setHz(Number(number.value));});
+  number.addEventListener('change',()=>{setHz(Number(number.value));number.value=String(freq);});
+  number.addEventListener('blur',()=>number.value=String(freq));
+  play.addEventListener('click',()=>playing?stop():start());
+  window.addEventListener('pagehide',stop);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing)stop();});
+  paint();
+  if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('service-worker.js').catch(()=>{});
+})();
+</script>
+<script src="home-button.js"></script>
+</body>
+</html>
